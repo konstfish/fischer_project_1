@@ -9,14 +9,17 @@
 
 
 #include "utils.h"
+#include "Coordinator.h"
+
 class Node{
     private:
     int id{-1};
 
+    Coordinator &coord;
 
 
     public:
-    Node(int i):id( i ){};
+    Node(int i, Coordinator &c):id( i ), coord( c ){};
 
     int getId() { return id; }
 

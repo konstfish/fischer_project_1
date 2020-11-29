@@ -26,19 +26,17 @@ int main(int argc, char* argv[]) {
         return app.exit(e);
     }
 
-    Coordinator c(1);
+    Coordinator coord;
 
     vector<thread> node_container;
     node_container.resize(no_of_nodes);
 
-    for (int cnt = 0; cnt < no_of_nodes; cnt++)
-    {
-        Node tmp_node(cnt);
+    for (int cnt = 0; cnt < no_of_nodes; cnt++) {
+        Node tmp_node(cnt, ref(coord));
         node_container.at(cnt) = thread{tmp_node};
     }
 
-    for( auto &t : node_container )
-    {
+    for( auto &t : node_container ) {
         t.join();
     }
 

@@ -23,6 +23,7 @@ void Node::operator()(){
         buf.str("");
 
         // request kritischen abschnitt
+        coord.message_req(id);
 
         buf << "Node " << id << ": Entering critical section" << endl;
         cout << buf.str();
@@ -33,5 +34,7 @@ void Node::operator()(){
         buf << "Node " << id << ": REL critical section" << endl;
         cout << buf.str();
         buf.str("");
+
+        coord.message_rel();
     }
 }

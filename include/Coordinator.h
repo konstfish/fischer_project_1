@@ -3,22 +3,20 @@
 #include <iostream>
 #include <mutex>
 #include <thread>
-#include <vector>
-
-#include "Node.h"
+#include <queue> 
 
 class Coordinator{
     private:
-    int id{-1};
-
-    std::vector<Node> queue;
-    std::condition_variable spot_open;
+    std::queue<int> node_queue;
+    
+    std::mutex mtx;
+    std::condition_variable spot_taken;
 
     public:
-    Coordinator(int i):id( i ){};
+    Coordinator(){};
 
-    int getId() { return id; }
-
-    void message_req();
+    void message_req(int id);
     void message_rel();
+
+    void print_queue();
 };
