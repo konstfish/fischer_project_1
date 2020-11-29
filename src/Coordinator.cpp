@@ -13,7 +13,7 @@ void Coordinator::message_req(int id){
 
     node_queue.push(id);
 
-    print_queue();
+    // print_queue();
 
     while(id != node_queue.front()){
         spot_taken.wait(ul);

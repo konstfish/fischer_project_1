@@ -7,6 +7,9 @@ void Node::operator()(){
     std::mt19937 gen{rd()}; std::uniform_real_distribution<> dis{3, 5};
     double seconds;
 
+    std::mt19937 gen_outage{rd()}; std::uniform_real_distribution<> dis_outage{0, 100};
+    double chance;
+
     ostringstream buf;
 
     while(true){
@@ -35,6 +38,16 @@ void Node::operator()(){
         cout << buf.str();
         buf.str("");
 
+
+        if(opt.simulate_node_outage){
+            chance = dis_outage(gen_outage);
+            if(chance > 95){
+                buf << "Node " << id << ": Failing, shutting down!" << endl;
+                cout << buf.str();
+                buf.str("");
+                break;
+            }
+        }
         coord.message_rel();
     }
 }

@@ -11,15 +11,21 @@
 #include "utils.h"
 #include "Coordinator.h"
 
+struct Options{
+    bool simulate_node_outage;
+
+    Options(bool sno):simulate_node_outage( sno ){};
+};
+
 class Node{
     private:
     int id{-1};
 
     Coordinator &coord;
-
+    Options opt;
 
     public:
-    Node(int i, Coordinator &c):id( i ), coord( c ){};
+    Node(int i, Coordinator &c, Options o):id( i ), coord( c ), opt( o ){};
 
     int getId() { return id; }
 
