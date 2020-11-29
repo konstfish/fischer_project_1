@@ -3,8 +3,9 @@
 using namespace std;
 
 void Coordinator::print_queue(){
-    unique_lock<mutex> ul{mtx};
-
+    cout << "Coord: Current Queue Size: " << node_queue.size() << endl;
+    cout << "Coord: Current Node: " << node_queue.front() << endl;
+    cout << "Coord: Last Node: " << node_queue.back() << endl;
 }
 
 void Coordinator::message_req(int id){
@@ -13,7 +14,6 @@ void Coordinator::message_req(int id){
     node_queue.push(id);
 
     print_queue();
-    cout << node_queue.front() << endl;
 
     while(id != node_queue.front()){
         spot_taken.wait(ul);
