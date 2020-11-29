@@ -1,7 +1,8 @@
 .vscode
+builddir
 .DS_Store
 ._*
-build
+build/*
 
 # Prerequisites
 *.d
