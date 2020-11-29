@@ -38,7 +38,13 @@ add_global_arguments('-I' + get_option('spdlog_include_dir'), language : 'cpp')
 
 # subdir('SUBDIR1')
 
-inc_dir = include_directories('include')
+inc_dir = include_directories(['include',
+                               '/Users/david/Desktop/HTL/NVS/include_external/', # bin mir nicht sicher warum, die option geht daweil noch nicht
+#                               get_option('spdlog_include_dir'),
+#                               get_option('json_include_dir'),
+#                               get_option('asio_include_dir')                               
+                              ])
+
 src = ['src/main.cpp']
 #protobuf: src = ['src/main.cpp', generated]
 
