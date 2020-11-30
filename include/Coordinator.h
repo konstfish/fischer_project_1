@@ -22,4 +22,6 @@ class Coordinator{
     void message_rel();
 
     void print_queue();
+
+    void operator()();
 };

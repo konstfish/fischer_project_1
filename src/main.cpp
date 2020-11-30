@@ -18,11 +18,14 @@ int main(int argc, char* argv[]) {
     int no_of_nodes{3};
 
     bool sim_node_outage{false};
+    bool outage_detection{false};
 
     app.add_option("number", no_of_nodes, "Number of Nodes to create") -> required() 
-    ->  check(CLI::Range(2,100).description("Range is limited to sensible values").active(true).name("range"));
+        -> check(CLI::Range(2,100).description("Range is limited to sensible values").active(true).name("range"));
 
-    app.add_flag("-o, --outage", sim_node_outage, "Randomly forces nodes to fail, causing a deadlock");
+    CLI::Option *sim_outage = app.add_flag("-o, --outage-simulation", sim_node_outage, "Randomly forces nodes to fail, causing a deadlock");
+
+    app.add_flag("-d, --outage-detection", outage_detection, "Detect failing nodes & remove them from the queue")->needs(sim_outage);
 
     // app.add_flag("-r, --requests", io_async, "Use requests to communicate");
 
@@ -35,6 +38,12 @@ int main(int argc, char* argv[]) {
 
     Coordinator coord;
     Options opt(sim_node_outage);
+
+    unique_ptr<thread> thread_coord;
+
+    if(outage_detection){
+        thread_coord = unique_ptr<thread>(new thread(ref(coord)));
+    }
 
     /*RequestNode tmp(1, ref(coord), opt);
     thread t1{tmp};
@@ -53,6 +62,11 @@ int main(int argc, char* argv[]) {
 
     for( auto &t : node_container ) {
         t.join();
+    }
+
+    if(outage_detection){
+        (*thread_coord).join();
+        delete thread_coord;
     }
 
     return 0;
