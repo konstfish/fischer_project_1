@@ -22,7 +22,7 @@ int main(int argc, char* argv[]) {
 
     app.add_flag("-o, --outage", sim_node_outage, "Randomly forces nodes to fail, causing a deadlock");
 
-    // app.add_flag("-s, --socket", io_async, "Use sockets to communicate");
+    // app.add_flag("-r, --requests", io_async, "Use requests to communicate");
 
     try {
         app.parse(argc, argv);

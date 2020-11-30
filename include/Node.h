@@ -6,7 +6,10 @@
 #include <vector>
 #include <random>
 #include <sstream>
+#include <math.h>
 
+#include <fmt/core.h>
+#include <fmt/color.h>
 
 #include "utils.h"
 #include "Coordinator.h"

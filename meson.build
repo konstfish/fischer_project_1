@@ -4,19 +4,21 @@ project('distsync', 'cpp',
         version : '0.1',
         default_options : ['cpp_std=c++17', 'warning_level=3', 'werror=true'])
 
-# thread_dep = dependency('threads')
+thread_dep = dependency('threads')
+fmt_dep = dependency('fmt')
+
 
 # begin asio: https://think-async.com/Asio/
-add_global_arguments('-I' + get_option('asio_include_dir'), language : 'cpp')
-add_global_arguments('-DASIO_STANDALONE', language : 'cpp')
-add_global_arguments('-DASIO_NO_DEPRECATED', language : 'cpp')
+#add_global_arguments('-I' + get_option('asio_include_dir'), language : 'cpp')
+#add_global_arguments('-DASIO_STANDALONE', language : 'cpp')
+#add_global_arguments('-DASIO_NO_DEPRECATED', language : 'cpp')
 # end asio
 
 # CLI11: https://github.com/CLIUtils/CLI11
-add_global_arguments('-I' + get_option('cli11_include_dir'), language : 'cpp')
+#add_global_arguments('-I' + get_option('cli11_include_dir'), language : 'cpp')
 
 # spdlog: https://github.com/gabime/spdlog
-add_global_arguments('-I' + get_option('spdlog_include_dir'), language : 'cpp')
+#add_global_arguments('-I' + get_option('spdlog_include_dir'), language : 'cpp')
 
 # json: https://github.com/nlohmann/json
 #add_global_arguments('-I' + get_option('json_include_dir'), language : 'cpp')
@@ -39,8 +41,8 @@ add_global_arguments('-I' + get_option('spdlog_include_dir'), language : 'cpp')
 # subdir('SUBDIR1')
 
 inc_dir = include_directories(['include',
-                               '/Users/david/Desktop/HTL/NVS/include_external/', # bin mir nicht sicher warum, die option geht daweil noch nicht
-#                               get_option('spdlog_include_dir'),
+                               get_option('cli11_include_dir'),
+#                               get_option('fmt_include_dir'),   # uncomment on final release!!
 #                               get_option('json_include_dir'),
 #                               get_option('asio_include_dir')                               
                               ])
@@ -49,7 +51,7 @@ src = ['src/main.cpp', 'src/utils.cpp', 'src/Coordinator.cpp', 'src/Node.cpp']
 #protobuf: src = ['src/main.cpp', generated]
 
 executable('distsync',
-           sources : src,
-           include_directories : inc_dir,
-#           dependencies : [thread_dep, protobuf_dep]
+        sources : src,
+        include_directories : inc_dir,
+        dependencies : [thread_dep, fmt_dep]
           )
