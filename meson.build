@@ -43,11 +43,11 @@ fmt_dep = dependency('fmt')
 inc_dir = include_directories(['include',
                                get_option('cli11_include_dir'),
 #                               get_option('fmt_include_dir'),   # uncomment on final release!!
-#                               get_option('json_include_dir'),
+                               get_option('httplib_include_dir'),
 #                               get_option('asio_include_dir')                               
                               ])
 
-src = ['src/main.cpp', 'src/utils.cpp', 'src/Coordinator.cpp', 'src/Node.cpp']
+src = ['src/main.cpp', 'src/utils.cpp', 'src/Coordinator.cpp', 'src/Node.cpp', 'src/RequestNode.cpp']
 #protobuf: src = ['src/main.cpp', generated]
 
 executable('distsync',

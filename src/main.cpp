@@ -8,6 +8,8 @@
 #include "Coordinator.h"
 #include "Node.h"
 
+#include "RequestNode.h"
+
 using namespace std;
 
 int main(int argc, char* argv[]) {
@@ -30,9 +32,17 @@ int main(int argc, char* argv[]) {
         return app.exit(e);
     }
 
+
     Coordinator coord;
     Options opt(sim_node_outage);
 
+    /*RequestNode tmp(1, ref(coord), opt);
+    thread t1{tmp};
+
+    t1.join();
+
+    this_thread::sleep_for(10s);
+    */
     vector<thread> node_container;
     node_container.resize(no_of_nodes);
 

@@ -12,8 +12,10 @@
 #include <fmt/color.h>
 
 #include "utils.h"
+#include <httplib.h>
 #include "Coordinator.h"
-class Node{
+
+class RequestNode{
     private:
     int id{-1};
 
@@ -21,7 +23,7 @@ class Node{
     Options opt;
 
     public:
-    Node(int i, Coordinator &c, Options o):id( i ), coord( c ), opt( o ){};
+    RequestNode(int i, Coordinator &c, Options o):id( i ), coord( c ), opt( o ){ };
 
     int getId() { return id; }
 

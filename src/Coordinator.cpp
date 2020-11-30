@@ -15,12 +15,20 @@ void Coordinator::message_req(int id){
 
     // print_queue();
 
-    while(id != node_queue.front()){
-        spot_taken.wait(ul);
+    int cnt{0};
+
+    while(id != node_queue.front() && cnt < 6){
+        spot_taken.wait_for(ul, 1s);
+        cnt+= 1;
     }
 
-    //spot_taken.wait(ul, [&](){return (id != node_queue.front());});
-    
+    if(cnt == 6){
+        fmt::print(fg(fmt::color::crimson) | fmt::emphasis::italic,
+            "Coord : Waited for 6 Seconds - Node {} has outage, removing from Network\n", id);
+    }else{
+        fmt::print(fg(fmt::color::light_salmon) | fmt::emphasis::italic,
+            "Coord : OK to Node {}\n", id);
+    }    
 }
 
 void Coordinator::message_rel(){
