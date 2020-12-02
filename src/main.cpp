@@ -16,7 +16,20 @@
 
 using namespace std;
 
+
+/*
+Ich wollt wirklich alles mögliche machen um das zu vermeiden aber am ende ist das trotzdem die "Sauberste" Lösung.
+
+Andere optionen wären eine flag als globale variable, die mit dem signal handler geändert wird, dafür ist aber eine
+while schleife im main nötig die diese permanent checkt (was ebenfalls nicht wirklich sauber ist)
+
+stackoverflow hat mir leider auch nicht geholfen, da alle nur auf diverse lösungen mit globalen variablen verweisen
+
+:(
+
+*/
 Coordinator coord;
+
 
 int main(int argc, char* argv[]) {
     CLI::App app("Simulation einer verteilten Synchronisation mit einem zentralen Koordinator");
