@@ -18,12 +18,6 @@ using namespace std;
 
 Coordinator coord;
 
-void signal_handler(int signum) {
-    cout << endl << "Interrupt signal (" << signum << ") received." << endl;
-
-    exit(signum);  
-}
-
 int main(int argc, char* argv[]) {
     CLI::App app("Simulation einer verteilten Synchronisation mit einem zentralen Koordinator");
 

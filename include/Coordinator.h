@@ -11,14 +11,13 @@
 
 #include <tabulate/table.hpp>
 
-struct StatContainer{
-    int admitted_nodes{0};
-    size_t max_queue_size{0};
-    int failed_nodes{0};
-    int recoveries{0};
-};
+#include "utils.h"
+
 class Coordinator{
     private:
+
+    std::__1::chrono::system_clock::time_point start;
+
     std::queue<int> node_queue;
     
     std::mutex mtx;
@@ -27,7 +26,9 @@ class Coordinator{
     StatContainer st;
 
     public:
-    Coordinator(){};
+    Coordinator(){
+        start = std::__1::chrono::system_clock::now();
+    };
 
     ~Coordinator(){
         output_stat_table();

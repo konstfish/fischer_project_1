@@ -71,27 +71,35 @@ void Coordinator::collect_stats(){
 }
 
 void Coordinator::output_stat_table(){
-    fmt::print(fmt::emphasis::bold,
-                    "Final Stats:\n");
+    auto duration = chrono::duration_cast<chrono::seconds> (std::chrono::system_clock::now() - start);
 
-    tabulate::Table stat_table;
+    int tmp = duration.count();
 
-    size_t headers = 3;
+    if(tmp > 3){
+        fmt::print(fmt::emphasis::bold,
+            "Final Stats:\n");
 
-    stat_table.add_row({"No. of Admitted Nodes", 
-                        "Maximum Queue Size", 
-                        "Failed Nodes/Recoveries"});
+        tabulate::Table stat_table;
 
-    stat_table.add_row({to_string(st.admitted_nodes), 
-                        to_string(st.max_queue_size), 
-                        to_string(st.failed_nodes) + '/' + to_string(st.recoveries)});
+        size_t headers = 4;
 
-    for (size_t i = 0; i < headers; ++i) {
-    stat_table[0][i].format()
-      .font_color(tabulate::Color::yellow)
-      .font_align(tabulate::FontAlign::center)
-      .font_style({tabulate::FontStyle::bold});
-  }
+        stat_table.add_row({"No. of Admitted Nodes", 
+                            "Maximum Queue Size", 
+                            "Failed Nodes/Recoveries",
+                            "Total Time Spent Running"});
 
-    std::cout << stat_table << std::endl;
+        stat_table.add_row({to_string(st.admitted_nodes), 
+                            to_string(st.max_queue_size), 
+                            to_string(st.failed_nodes) + '/' + to_string(st.recoveries),
+                            to_string(tmp) + 's'});
+
+        for (size_t i = 0; i < headers; ++i) {
+            stat_table[0][i].format()
+            .font_color(tabulate::Color::yellow)
+            .font_align(tabulate::FontAlign::center)
+            .font_style({tabulate::FontStyle::bold});
+        } 
+
+        std::cout << stat_table << std::endl;
+    }
 }
