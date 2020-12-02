@@ -8,6 +8,12 @@
 #include <sstream>
 #include <math.h>
 
+/*
+FINAL:
+#define FMT_HEADER_ONLY
+#include <fmt/format.h>
+*/
+
 #include <fmt/core.h>
 #include <fmt/color.h>
 

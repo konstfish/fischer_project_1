@@ -17,6 +17,11 @@ void Node::operator()(){
 
     httplib::Client cli("http://127.0.0.1:5001");
 
+    // Worst case bei 200 nodes -> (5+4)*200
+
+    cli.set_read_timeout(1800, 0); // 5 seconds
+    cli.set_write_timeout(1800, 0); // 5 seconds
+
     while(true){
 
         seconds = dis(gen);

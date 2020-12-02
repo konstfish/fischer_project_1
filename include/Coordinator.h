@@ -19,7 +19,7 @@
 class Coordinator{
     private:
 
-        std::__1::chrono::system_clock::time_point start;
+        std::chrono::system_clock::time_point start;
 
         std::queue<int> node_queue;
         
@@ -30,7 +30,7 @@ class Coordinator{
 
     public:
         Coordinator(){
-            start = std::__1::chrono::system_clock::now();
+            start = std::chrono::system_clock::now();
         };
 
         ~Coordinator(){
