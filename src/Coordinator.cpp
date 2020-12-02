@@ -27,10 +27,17 @@ void Coordinator::message_req(int id){
         "Coord : OK to Node {}\n", id);
 }
 
-void Coordinator::message_rel(){
+void Coordinator::message_rel(int id){
     unique_lock<mutex> ul{mtx};
 
-    node_queue.pop();
+    int removed = node_queue.front();
+    
+    if(removed != id){
+        fmt::print(fg(fmt::color::crimson) | fmt::emphasis::bold,
+            "Coord : REL Request from Node {} didn't match current Node {}\n", id, removed);
+    }else{
+        node_queue.pop();
+    }
 
     spot_taken.notify_one();
 }

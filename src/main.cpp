@@ -1,3 +1,9 @@
+/*
+David Fischer
+5CHIF
+
+NVS Projekt 1 - 
+*/
 
 #include <iostream>
 #include <thread>
@@ -10,6 +16,8 @@
 
 #include "Coordinator.h"
 #include "Node.h"
+
+#include "RequestCoordinator.h"
 
 using namespace std;
 
@@ -50,6 +58,14 @@ int main(int argc, char* argv[]) {
     } catch (const CLI::ParseError &e) { 
         return app.exit(e);
     }
+
+
+    /*RequestCoordinator rq;
+    new thread(ref(rq));
+
+    cout << "asdf" << endl;
+
+    this_thread::sleep_for(60s);*/
 
     // since this is optional, a unique_ptr handles thread creation
     unique_ptr<thread> thread_coord;

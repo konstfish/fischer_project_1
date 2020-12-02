@@ -35,7 +35,7 @@ class Coordinator{
         }
 
         void message_req(int id);
-        void message_rel();
+        void message_rel(int id);
 
         void collect_stats();
         void output_stat_table();

@@ -4,9 +4,12 @@ using namespace std;
 
 void Node::operator()(){
     random_device rd;
+
+    // sleep a random amount of time
     std::mt19937 gen{rd()}; std::uniform_real_distribution<> dis{3, 5};
     double seconds;
 
+    // generate 5% chance to fail
     std::mt19937 gen_outage{rd()}; std::uniform_real_distribution<> dis_outage{0, 100};
     double chance;
 
@@ -46,6 +49,6 @@ void Node::operator()(){
         fmt::print(fg(fmt::color::spring_green) | fmt::emphasis::italic,
             "Node {}: REL critical section\n", id);
 
-        coord.message_rel();
+        coord.message_rel(id);
     }
 }

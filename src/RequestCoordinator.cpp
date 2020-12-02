@@ -1,4 +1,5 @@
 #include "RequestCoordinator.h"
+#include <thread>
 
 using namespace std;
 
@@ -35,20 +36,17 @@ void RequestCoordinator::message_rel(){
 void RequestCoordinator::operator()(){
     httplib::Server svr;
 
-    svr.Get("/req", [](const Request& req, Response& res) {
-        if (req.has_param("id")) {
-            auto id = req.get_param_value("key");
-
-            // TODO
-
-        }else{
-            res.set_content("Invalid Request")
+    svr.Get("/req", [](const httplib::Request& req, httplib::Response& res) {
+        auto id = req.get_param_value("node_id");
+        if(id == ""){
+            res.set_content("Invalid Request", "text/plain");   
         }
-        res.set_content("OK", "text/plain");
+        
+        int test = stoi(id);
+        cout << test << endl;
+        res.set_content(id, "text/plain");   
     });
 
-
     svr.listen("127.0.0.1", 5001);
-
-
+    //thread t{svr.listen, "127.0.0.1", 5001};
 }
