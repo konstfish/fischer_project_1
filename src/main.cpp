@@ -2,7 +2,6 @@
 #include <iostream>
 #include <thread>
 #include <vector>
-#include <csignal>
 #include <mutex>
 
 #include "CLI11.hpp"
@@ -11,8 +10,6 @@
 
 #include "Coordinator.h"
 #include "Node.h"
-
-#include "RequestNode.h"
 
 using namespace std;
 
@@ -26,10 +23,9 @@ while schleife im main nötig die diese permanent checkt (was ebenfalls nicht wi
 stackoverflow hat mir leider auch nicht geholfen, da alle nur auf diverse lösungen mit globalen variablen verweisen
 
 :(
-
 */
-Coordinator coord;
 
+Coordinator coord;
 
 int main(int argc, char* argv[]) {
     CLI::App app("Simulation einer verteilten Synchronisation mit einem zentralen Koordinator");
@@ -39,8 +35,9 @@ int main(int argc, char* argv[]) {
     bool sim_node_outage{false};
     bool outage_detection{false};
 
+    // at about 300 threads /dev/urandom gives out, since too many threads are accessing it -> 200 is the logical maximum
     app.add_option("number", no_of_nodes, "Number of Nodes to create") -> required() 
-        -> check(CLI::Range(2,100).description("Range is limited to sensible values").active(true).name("range"));
+        -> check(CLI::Range(2,200).description("Range is limited to sensible values").active(true).name("range"));
 
     CLI::Option *sim_outage = app.add_flag("-o, --outage-simulation", sim_node_outage, "Randomly forces nodes to fail, causing a deadlock");
 
@@ -54,24 +51,20 @@ int main(int argc, char* argv[]) {
         return app.exit(e);
     }
 
+    // since this is optional, a unique_ptr handles thread creation
     unique_ptr<thread> thread_coord;
 
     if(outage_detection){
         thread_coord = unique_ptr<thread>(new thread(ref(coord)));
     }
 
+    // signal handler to catch Ctrl+C and output Stat Table (Through the Coordinators Destructor)
     signal(SIGINT, signal_handler);
 
-    /*RequestNode tmp(1, ref(coord), opt);
-    thread t1{tmp};
-
-    t1.join();
-
-    this_thread::sleep_for(10s);
-    */
-
+    // create option struct
     Options opt(sim_node_outage);
 
+    // create vector of threads to store the nodes operator()() threads
     vector<thread> node_container;
     node_container.resize(no_of_nodes);
 
@@ -80,10 +73,13 @@ int main(int argc, char* argv[]) {
         node_container.at(cnt) = thread{tmp_node};
     }
 
+
+    // join threads from node_container
     for( auto &t : node_container ) {
         t.join();
     }
 
+    // (optional): join coordinator operator()() thread
     if(outage_detection){
         (*thread_coord).join();
     }

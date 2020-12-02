@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <csignal>
 
 #include <fmt/core.h>
 #include <fmt/color.h>
