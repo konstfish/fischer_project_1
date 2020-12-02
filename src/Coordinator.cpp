@@ -77,6 +77,9 @@ void Coordinator::operator()(bool http_server, bool outage_dect){
     if(http_server){
         httplib::Server svr;
 
+        // update thread pool (support 202 concurrent connections)
+        svr.new_task_queue = [] { return new httplib::ThreadPool(202); };
+
         svr.Get("/req", [this](const httplib::Request& req, httplib::Response& res) {
             auto id = req.get_param_value("node_id");
             if(id == ""){
@@ -123,6 +126,8 @@ void Coordinator::collect_stats(){
 }
 
 void Coordinator::output_stat_table(){
+    fmt::print(fmt::emphasis::bold,
+        "Final Stats:\n");
     std::cout << generate_stat_table() << endl;
 }
 
@@ -140,9 +145,6 @@ tabulate::Table Coordinator::generate_stat_table(){
     tabulate::Table stat_table;
 
     if(tmp > 3){
-        fmt::print(fmt::emphasis::bold,
-            "Final Stats:\n");
-
         size_t headers = 4;
 
         stat_table.add_row({"No. of Admitted Nodes", 

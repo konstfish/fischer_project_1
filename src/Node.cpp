@@ -19,8 +19,8 @@ void Node::operator()(){
 
     // Worst case bei 200 nodes -> (5+4)*200
 
-    cli.set_read_timeout(1800, 0); // 5 seconds
-    cli.set_write_timeout(1800, 0); // 5 seconds
+    cli.set_read_timeout(1800, 0);
+    cli.set_write_timeout(1800, 0);
 
     while(true){
 
