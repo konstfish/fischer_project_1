@@ -105,8 +105,8 @@ void Coordinator::operator()(bool http_server, bool outage_dect){
 
         svr.Get("/get", [this](const httplib::Request& req, httplib::Response& res) {
             auto id = req.get_param_value("node_id");
-            output_stat_table();
-            res.set_content("asdf", "text/plain");
+            auto resp = dump_stat_table();
+            res.set_content(resp, "text/plain");
         });
 
         svr.listen("127.0.0.1", 5001);
@@ -123,19 +123,25 @@ void Coordinator::collect_stats(){
 }
 
 void Coordinator::output_stat_table(){
-    std::cout << generate_stat_table() << std::endl;
+    std::cout << generate_stat_table() << endl;
 }
 
-string Coordinator::generate_stat_table(){
+string Coordinator::dump_stat_table(){
+    ostringstream buf;
+    buf << generate_stat_table() << endl;
+    return buf.str();
+}
+
+tabulate::Table Coordinator::generate_stat_table(){
     auto duration = chrono::duration_cast<chrono::seconds> (std::chrono::system_clock::now() - start);
 
     int tmp = duration.count();
 
+    tabulate::Table stat_table;
+
     if(tmp > 3){
         fmt::print(fmt::emphasis::bold,
             "Final Stats:\n");
-
-        tabulate::Table stat_table;
 
         size_t headers = 4;
 
@@ -159,5 +165,5 @@ string Coordinator::generate_stat_table(){
         return stat_table;
     }
 
-    return ""
+    return stat_table;
 }

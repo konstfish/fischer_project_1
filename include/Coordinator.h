@@ -5,6 +5,7 @@
 #include <thread>
 #include <queue>
 #include <vector>
+#include <sstream>
 
 #include <fmt/core.h>
 #include <fmt/color.h>
@@ -41,6 +42,9 @@ class Coordinator{
 
         void collect_stats();
         void output_stat_table();
+        tabulate::Table generate_stat_table();
+        std::string dump_stat_table();
+
         void print_queue();
 
         void http_server();
