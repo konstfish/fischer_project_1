@@ -47,7 +47,7 @@ inc_dir = include_directories(['include',
                                get_option('tabulate_include_dir')                               
                               ])
 
-src = ['src/main.cpp', 'src/utils.cpp', 'src/Coordinator.cpp', 'src/Node.cpp', 'src/RequestCoordinator.cpp']
+src = ['src/main.cpp', 'src/utils.cpp', 'src/Coordinator.cpp', 'src/Node.cpp']
 #protobuf: src = ['src/main.cpp', generated]
 
 executable('distsync',
