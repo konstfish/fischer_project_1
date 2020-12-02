@@ -2,8 +2,12 @@
 #include <iostream>
 #include <thread>
 #include <vector>
+#include <csignal>
+#include <mutex>
 
 #include "CLI11.hpp"
+
+#include "utils.h"
 
 #include "Coordinator.h"
 #include "Node.h"
@@ -11,6 +15,14 @@
 #include "RequestNode.h"
 
 using namespace std;
+
+Coordinator coord;
+
+void signal_handler(int signum) {
+    cout << endl << "Interrupt signal (" << signum << ") received." << endl;
+
+    exit(signum);  
+}
 
 int main(int argc, char* argv[]) {
     CLI::App app("Simulation einer verteilten Synchronisation mit einem zentralen Koordinator");
@@ -35,15 +47,13 @@ int main(int argc, char* argv[]) {
         return app.exit(e);
     }
 
-
-    Coordinator coord;
-    Options opt(sim_node_outage);
-
     unique_ptr<thread> thread_coord;
 
     if(outage_detection){
         thread_coord = unique_ptr<thread>(new thread(ref(coord)));
     }
+
+    signal(SIGINT, signal_handler);
 
     /*RequestNode tmp(1, ref(coord), opt);
     thread t1{tmp};
@@ -52,6 +62,9 @@ int main(int argc, char* argv[]) {
 
     this_thread::sleep_for(10s);
     */
+
+    Options opt(sim_node_outage);
+
     vector<thread> node_container;
     node_container.resize(no_of_nodes);
 
@@ -66,7 +79,6 @@ int main(int argc, char* argv[]) {
 
     if(outage_detection){
         (*thread_coord).join();
-        delete thread_coord;
     }
 
     return 0;
