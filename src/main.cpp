@@ -42,6 +42,7 @@ int main(int argc, char* argv[]) {
 
     bool sim_node_outage{false};
     bool outage_detection{false};
+    bool communication_via_req{false};
 
     // at about 300 threads /dev/urandom gives out, since too many threads are accessing it -> 200 is the logical maximum
     app.add_option("number", no_of_nodes, "Number of Nodes to create") -> required() 
@@ -51,7 +52,7 @@ int main(int argc, char* argv[]) {
 
     app.add_flag("-d, --outage-detection", outage_detection, "Detect failing nodes & remove them from the queue")->needs(sim_outage);
 
-    // app.add_flag("-r, --requests", io_async, "Use requests to communicate");
+    app.add_flag("-r, --requests", communication_via_req, "Use requests to communicate");
 
     try {
         app.parse(argc, argv);
@@ -70,15 +71,15 @@ int main(int argc, char* argv[]) {
     // since this is optional, a unique_ptr handles thread creation
     unique_ptr<thread> thread_coord;
 
-    if(outage_detection){
-        thread_coord = unique_ptr<thread>(new thread(ref(coord)));
+    if(outage_detection or communication_via_req){
+        thread_coord = unique_ptr<thread>(new thread(ref(coord), communication_via_req, outage_detection));
     }
 
     // signal handler to catch Ctrl+C and output Stat Table (Through the Coordinators Destructor)
     signal(SIGINT, signal_handler);
 
     // create option struct
-    Options opt(sim_node_outage);
+    Options opt(sim_node_outage, communication_via_req);
 
     // create vector of threads to store the nodes operator()() threads
     vector<thread> node_container;

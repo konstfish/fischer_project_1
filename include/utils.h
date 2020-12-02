@@ -10,8 +10,9 @@ void signal_handler( int signum);
 
 struct Options{
     bool simulate_node_outage;
+    bool http_communication;
 
-    Options(bool sno):simulate_node_outage( sno ){};
+    Options(bool sno, bool http):simulate_node_outage( sno ), http_communication( http ){};
 };
 
 struct StatContainer{

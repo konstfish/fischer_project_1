@@ -11,6 +11,8 @@
 
 #include <tabulate/table.hpp>
 
+#include <httplib.h>
+
 #include "utils.h"
 
 class Coordinator{
@@ -41,5 +43,7 @@ class Coordinator{
         void output_stat_table();
         void print_queue();
 
-        void operator()();
+        void http_server();
+
+        void operator()(bool http_server, bool outage_dect);
 };

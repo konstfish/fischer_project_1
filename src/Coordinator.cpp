@@ -44,30 +44,75 @@ void Coordinator::message_rel(int id){
 
 
 // only used to dected Node outages
-void Coordinator::operator()(){
-    int cnt{0};
-    int timeout{8};
-    int cur_id{-1};
+void Coordinator::operator()(bool http_server, bool outage_dect){
+    thread t([&](){
+        if(outage_dect){
+            int cnt{0};
+            int timeout{8};
+            int cur_id{-1};
 
-    while(true){
-        if(node_queue.size() > 0){
-            this_thread::sleep_for(1s);
-            if(node_queue.front() == cur_id){
-                cnt += 1;
-            }else{
-                cur_id = node_queue.front();
-                cnt = 0;
-            }
+            while(true){
+                if(node_queue.size() > 0){
+                    this_thread::sleep_for(1s);
+                    if(node_queue.front() == cur_id){
+                        cnt += 1;
+                    }else{
+                        cur_id = node_queue.front();
+                        cnt = 0;
+                    }
 
-            if(cnt == timeout){
-                st.failed_nodes += 1;
-                fmt::print(fg(fmt::color::crimson) | fmt::emphasis::bold,
-                    "Coord : Node {} didn't respond within {} seconds, removing from Queue\n", cur_id, timeout);
-                node_queue.pop();
-                st.recoveries += 1;
+                    if(cnt == timeout){
+                        st.failed_nodes += 1;
+                        fmt::print(fg(fmt::color::crimson) | fmt::emphasis::bold,
+                            "Coord : Node {} didn't respond within {} seconds, removing from Queue\n", cur_id, timeout);
+                        node_queue.pop();
+                        st.recoveries += 1;
+                    }
+                }
             }
         }
+    });
+
+
+    if(http_server){
+        httplib::Server svr;
+
+        svr.Get("/req", [this](const httplib::Request& req, httplib::Response& res) {
+            auto id = req.get_param_value("node_id");
+            if(id == ""){
+                res.set_content("Invalid Request", "text/plain");   
+            }
+            
+            int conv = stoi(id);
+
+            message_req(conv);
+
+            res.set_content("OK", "text/plain");
+        });
+
+        svr.Get("/rel", [this](const httplib::Request& req, httplib::Response& res) {
+            auto id = req.get_param_value("node_id");
+            if(id == ""){
+                res.set_content("Invalid Request", "text/plain");   
+            }
+            
+            int conv = stoi(id);
+
+            message_rel(conv);
+
+            res.set_content("Leaving Section!", "text/plain");
+        });
+
+        svr.Get("/get", [this](const httplib::Request& req, httplib::Response& res) {
+            auto id = req.get_param_value("node_id");
+            output_stat_table();
+            res.set_content("asdf", "text/plain");
+        });
+
+        svr.listen("127.0.0.1", 5001);
     }
+
+    t.join();
 }
 
 void Coordinator::collect_stats(){
@@ -78,6 +123,10 @@ void Coordinator::collect_stats(){
 }
 
 void Coordinator::output_stat_table(){
+    std::cout << generate_stat_table() << std::endl;
+}
+
+string Coordinator::generate_stat_table(){
     auto duration = chrono::duration_cast<chrono::seconds> (std::chrono::system_clock::now() - start);
 
     int tmp = duration.count();
@@ -105,8 +154,10 @@ void Coordinator::output_stat_table(){
             .font_color(tabulate::Color::yellow)
             .font_align(tabulate::FontAlign::center)
             .font_style({tabulate::FontStyle::bold});
-        } 
+        }
 
-        std::cout << stat_table << std::endl;
+        return stat_table;
     }
+
+    return ""
 }

@@ -11,8 +11,11 @@
 #include <fmt/core.h>
 #include <fmt/color.h>
 
+#include <httplib.h>
+
 #include "utils.h"
 #include "Coordinator.h"
+
 class Node{
     private:
     int id{-1};

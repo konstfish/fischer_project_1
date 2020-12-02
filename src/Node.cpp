@@ -15,6 +15,8 @@ void Node::operator()(){
 
     ostringstream buf;
 
+    httplib::Client cli("http://127.0.0.1:5001");
+
     while(true){
 
         seconds = dis(gen);
@@ -26,7 +28,14 @@ void Node::operator()(){
         fmt::print("Node {}: REQ to enter critical section\n", id);
 
         // request kritischen abschnitt
-        coord.message_req(id);
+
+        if(opt.http_communication){
+            string url = "/req?node_id="+to_string(id);
+            auto res = cli.Get(url.c_str());
+            // cout << res->status << endl;
+        }else{
+            coord.message_req(id);
+        }
 
         // Colors work well to quickly identify incorrect output.
         // blue & green should always alternate, otherwise 2 Nodes
@@ -49,6 +58,12 @@ void Node::operator()(){
         fmt::print(fg(fmt::color::spring_green) | fmt::emphasis::italic,
             "Node {}: REL critical section\n", id);
 
-        coord.message_rel(id);
+        if(opt.http_communication){
+            string url = "/rel?node_id="+to_string(id);
+            auto res = cli.Get(url.c_str());
+            // cout << res->status << endl;
+        }else{
+            coord.message_rel(id);
+        }
     }
 }
