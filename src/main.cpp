@@ -21,20 +21,19 @@ using namespace std;
 
 
 /*
-Ich wollt wirklich alles mögliche machen um das zu vermeiden aber am ende ist das trotzdem die "Sauberste" Lösung.
+Tried pretty much everything to get around this global variable, after considering a few options this remains the "cleanest"
 
-Andere optionen wären eine flag als globale variable, die mit dem signal handler geändert wird, dafür ist aber eine
-while schleife im main nötig die diese permanent checkt (was ebenfalls nicht wirklich sauber ist)
+Other options would be to set a "flag" global variable, which updates through the handler. Although this would require a 
+while true loop in the main section, which is also not very efficient.
 
-stackoverflow hat mir leider auch nicht geholfen, da alle nur auf diverse lösungen mit globalen variablen verweisen
-
+stackoverflow didnt help very much either, since all of the answers just use the same global variable approach
 :(
 */
 
 Coordinator coord;
 
 int main(int argc, char* argv[]) {
-    CLI::App app("Simulation einer verteilten Synchronisation mit einem zentralen Koordinator");
+    CLI::App app("Simulation of a distributed Synchronisation using a central Coordinator");
 
     int no_of_nodes{3};
 
@@ -48,7 +47,7 @@ int main(int argc, char* argv[]) {
 
     app.add_flag("-r, --requests", communication_via_req, "Use requests to communicate (Limits Nodes to a maximum of 10)");
 
-        // at about 300 threads /dev/urandom gives out, since too many threads are accessing it -> 200 is the logical maximum
+    // at about 300 threads /dev/urandom gives out, since too many threads are accessing it -> 200 is the logical maximum
     app.add_option("number", no_of_nodes, "Number of Nodes to create") -> required() 
         -> check(CLI::Range(2,200).description("Range is limited to sensible values").active(true).name("range"));
 

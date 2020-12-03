@@ -8,6 +8,7 @@
 
 void signal_handler( int signum);
 
+// Options which are passed to the Node Class. (More expandable than just passing the variables themselfes)
 struct Options{
     bool simulate_node_outage;
     bool http_communication;
@@ -15,6 +16,7 @@ struct Options{
     Options(bool sno, bool http):simulate_node_outage( sno ), http_communication( http ){};
 };
 
+//Statistic Collection Struct, used to generate the table, which is displayed on exit.
 struct StatContainer{
     int admitted_nodes{0};
     size_t max_queue_size{0};
