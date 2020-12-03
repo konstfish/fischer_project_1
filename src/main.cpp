@@ -42,20 +42,28 @@ int main(int argc, char* argv[]) {
     bool outage_detection{false};
     bool communication_via_req{false};
 
-    // at about 300 threads /dev/urandom gives out, since too many threads are accessing it -> 200 is the logical maximum
-    app.add_option("number", no_of_nodes, "Number of Nodes to create") -> required() 
-        -> check(CLI::Range(2,200).description("Range is limited to sensible values").active(true).name("range"));
-
     CLI::Option *sim_outage = app.add_flag("-o, --outage-simulation", sim_node_outage, "Randomly forces nodes to fail, causing a deadlock");
 
     app.add_flag("-d, --outage-detection", outage_detection, "Detect failing nodes & remove them from the queue")->needs(sim_outage);
 
-    app.add_flag("-r, --requests", communication_via_req, "Use requests to communicate");
+    app.add_flag("-r, --requests", communication_via_req, "Use requests to communicate (Limits Nodes to a maximum of 10)");
+
+        // at about 300 threads /dev/urandom gives out, since too many threads are accessing it -> 200 is the logical maximum
+    app.add_option("number", no_of_nodes, "Number of Nodes to create") -> required() 
+        -> check(CLI::Range(2,200).description("Range is limited to sensible values").active(true).name("range"));
 
     try {
         app.parse(argc, argv);
     } catch (const CLI::ParseError &e) { 
         return app.exit(e);
+    }
+
+
+    // ran into issues with a larger number of Nodes, 10 should suffice.
+    if(communication_via_req && no_of_nodes > 10){
+        cout << "number: Value " << no_of_nodes << " not in range 2 to 10 (Limited due to request flag)" << endl
+             << "Run with --help for more information." << endl;
+        return 1;
     }
     
     // since this is optional, a unique_ptr handles thread creation

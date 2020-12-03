@@ -77,8 +77,11 @@ void Coordinator::operator()(bool http_server, bool outage_dect){
     if(http_server){
         httplib::Server svr;
 
-        // update thread pool (support 202 concurrent connections)
-        svr.new_task_queue = [] { return new httplib::ThreadPool(202); };
+        // update thread pool (support 15 concurrent connections)
+        svr.new_task_queue = [] { return new httplib::ThreadPool(15); };
+
+        svr.set_keep_alive_max_count(20);
+        svr.set_keep_alive_timeout(90);
 
         svr.Get("/req", [this](const httplib::Request& req, httplib::Response& res) {
             auto id = req.get_param_value("node_id");
@@ -126,9 +129,14 @@ void Coordinator::collect_stats(){
 }
 
 void Coordinator::output_stat_table(){
-    fmt::print(fmt::emphasis::bold,
-        "Final Stats:\n");
-    std::cout << generate_stat_table() << endl;
+    auto duration = chrono::duration_cast<chrono::seconds> (std::chrono::system_clock::now() - start);
+    int tmp = duration.count();
+
+    if(tmp > 3){
+        fmt::print(fmt::emphasis::bold,
+            "Final Stats:\n");
+        std::cout << generate_stat_table() << endl;
+    }
 }
 
 string Coordinator::dump_stat_table(){
@@ -144,27 +152,23 @@ tabulate::Table Coordinator::generate_stat_table(){
 
     tabulate::Table stat_table;
 
-    if(tmp > 3){
-        size_t headers = 4;
+    size_t headers = 4;
 
-        stat_table.add_row({"No. of Admitted Nodes", 
-                            "Maximum Queue Size", 
-                            "Failed Nodes/Recoveries",
-                            "Total Time Spent Running"});
+    stat_table.add_row({"No. of Admitted Nodes", 
+                        "Maximum Queue Size", 
+                        "Failed Nodes/Recoveries",
+                        "Total Time Spent Running"});
 
-        stat_table.add_row({to_string(st.admitted_nodes), 
-                            to_string(st.max_queue_size), 
-                            to_string(st.failed_nodes) + '/' + to_string(st.recoveries),
-                            to_string(tmp) + 's'});
+    stat_table.add_row({to_string(st.admitted_nodes), 
+                        to_string(st.max_queue_size), 
+                        to_string(st.failed_nodes) + '/' + to_string(st.recoveries),
+                        to_string(tmp) + 's'});
 
-        for (size_t i = 0; i < headers; ++i) {
-            stat_table[0][i].format()
-            .font_color(tabulate::Color::yellow)
-            .font_align(tabulate::FontAlign::center)
-            .font_style({tabulate::FontStyle::bold});
-        }
-
-        return stat_table;
+    for (size_t i = 0; i < headers; ++i) {
+        stat_table[0][i].format()
+        .font_color(tabulate::Color::yellow)
+        .font_align(tabulate::FontAlign::center)
+        .font_style({tabulate::FontStyle::bold});
     }
 
     return stat_table;
