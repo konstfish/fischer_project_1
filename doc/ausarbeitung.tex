@@ -1,6 +1,10 @@
 \documentclass[12pt, letterpaper]{article}
 \usepackage[utf8]{inputenc}
 \usepackage{cite}
+\usepackage{float}
+\usepackage{tikz}
+
+\graphicspath{{images/}}
 
 \title{Simulation einer verteilten Synchronisation mit einem zentralen Koordinator}
 \author{David Fischer, 5CHIF}
@@ -17,11 +21,32 @@
 
 \section{Einleitung}
 
-~\cite{temp}
-
 \subsection{Problematik}
 
-\subsubsection{Mutual Exclusion}
+\begin{figure}[H]
+    \centering
+    \resizebox{0.5\textwidth}{!}{\input{images/situation1.pdf_tex}}
+    \caption{1}
+    \label{fig:situation1}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \resizebox{0.5\textwidth}{!}{\input{images/situation2.pdf_tex}}
+    \caption{2}
+    \label{fig:situation2}
+\end{figure}
+
+
+\begin{figure}[H]
+    \centering
+    \resizebox{0.5\textwidth}{!}{\input{images/situation3.pdf_tex}}
+    \caption{3}
+    \label{fig:situation3}
+\end{figure}
+
+
+\subsubsection{Gegenseitiger Ausschluss (Mutual Exclusion)}
 
 \subsubsection{Verteilte Synchronisation}
 
