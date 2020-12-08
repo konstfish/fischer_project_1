@@ -1,8 +1,8 @@
 /*
-David Fischer
+David Fischer (03)
 5CHIF
 
-NVS Projekt 1 - 
+NVS Projekt 1 - Simulation of a distributed synchronisation using a central coordinator
 */
 
 #include <iostream>
@@ -19,7 +19,6 @@ NVS Projekt 1 -
 
 using namespace std;
 
-
 /*
 Tried pretty much everything to get around this global variable, after considering a few options this remains the "cleanest"
 
@@ -29,10 +28,10 @@ while true loop in the main section, which is also not very efficient.
 stackoverflow didnt help very much either, since all of the answers just use the same global variable approach
 :(
 */
-
 Coordinator coord;
 
 int main(int argc, char* argv[]) {
+    // CLI11 setup
     CLI::App app("Simulation of a distributed Synchronisation using a central Coordinator");
 
     int no_of_nodes{3};

@@ -1,7 +1,17 @@
+/*
+David Fischer (03)
+5CHIF
+
+NVS Projekt 1 - Simulation of a distributed synchronisation using a central coordinator
+*/
+
 #include "Coordinator.h"
 
 using namespace std;
 
+// IN : /
+// OUT: /
+// Prints a diverse set of information from the node queue 
 void Coordinator::print_queue(){
     cout << "Coord: Current Queue Size: " << node_queue.size() << endl;
     if(node_queue.size() >= 2){
@@ -10,6 +20,10 @@ void Coordinator::print_queue(){
     }
 }
 
+// IN : int id - Node ID
+// OUT: /
+// Adds the id to the queue and calls the condition variable to wait for a 
+// node exiting the critical section
 void Coordinator::message_req(int id){
     unique_lock<mutex> ul{mtx};
 
@@ -27,6 +41,10 @@ void Coordinator::message_req(int id){
         "Coord : OK to Node {}\n", id);
 }
 
+// IN : int id - Node ID
+// OUT: /
+// Removes an id from the node queue and notifies the condition variable.
+// Outputs an error if the id of the current node does not match the node trying to release the CS.
 void Coordinator::message_rel(int id){
     unique_lock<mutex> ul{mtx};
 
@@ -43,8 +61,12 @@ void Coordinator::message_rel(int id){
 }
 
 
-// only used to dected Node outages
+// IN :  bool http_server - starts the http server if requested
+//       bool outage_dect - starts outage detection if requested
+// OUT: /
 void Coordinator::operator()(bool http_server, bool outage_dect){
+
+    // Lambda thread to detect failed nodes
     thread t([&](){
         if(outage_dect){
             int cnt{0};
@@ -62,6 +84,7 @@ void Coordinator::operator()(bool http_server, bool outage_dect){
                     }
 
                     if(cnt == timeout){
+                        // if the counter is able to count up to the timeout, the node is removed from the queue
                         st.failed_nodes += 1;
                         fmt::print(fg(fmt::color::crimson) | fmt::emphasis::bold,
                             "Coord : Node {} didn't respond within {} seconds, removing from Queue\n", cur_id, timeout);
@@ -80,9 +103,11 @@ void Coordinator::operator()(bool http_server, bool outage_dect){
         // update thread pool (support 15 concurrent connections)
         svr.new_task_queue = [] { return new httplib::ThreadPool(15); };
 
+        // customize server parameters
         svr.set_keep_alive_max_count(20);
         svr.set_keep_alive_timeout(90);
 
+        // REQ route, calls the Coordinator::message_req function
         svr.Get("/req", [this](const httplib::Request& req, httplib::Response& res) {
             auto id = req.get_param_value("node_id");
             if(id == ""){
@@ -96,6 +121,7 @@ void Coordinator::operator()(bool http_server, bool outage_dect){
             res.set_content("OK", "text/plain");
         });
 
+        // REQ route, calls the Coordinator::message_rel function
         svr.Get("/rel", [this](const httplib::Request& req, httplib::Response& res) {
             auto id = req.get_param_value("node_id");
             if(id == ""){
@@ -109,6 +135,7 @@ void Coordinator::operator()(bool http_server, bool outage_dect){
             res.set_content("Leaving Section!", "text/plain");
         });
 
+        // get route, outputs the current stat table
         svr.Get("/get", [this](const httplib::Request& req, httplib::Response& res) {
             auto id = req.get_param_value("node_id");
             auto resp = dump_stat_table();
@@ -121,6 +148,7 @@ void Coordinator::operator()(bool http_server, bool outage_dect){
     t.join();
 }
 
+// helper function to collect stats
 void Coordinator::collect_stats(){
     st.admitted_nodes += 1;
     if(node_queue.size() > st.max_queue_size){
@@ -128,6 +156,7 @@ void Coordinator::collect_stats(){
     }
 }
 
+// helper function to print the stat table
 void Coordinator::output_stat_table(){
     auto duration = chrono::duration_cast<chrono::seconds> (std::chrono::system_clock::now() - start);
     int tmp = duration.count();
@@ -139,12 +168,14 @@ void Coordinator::output_stat_table(){
     }
 }
 
+// helper function to dump the stat table into a string and return said string
 string Coordinator::dump_stat_table(){
     ostringstream buf;
     buf << generate_stat_table() << endl;
     return buf.str();
 }
 
+// function to turn the StatContainer struct into a tabulate table and return it
 tabulate::Table Coordinator::generate_stat_table(){
     auto duration = chrono::duration_cast<chrono::seconds> (std::chrono::system_clock::now() - start);
 

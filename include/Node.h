@@ -1,3 +1,10 @@
+/*
+David Fischer (03)
+5CHIF
+
+NVS Projekt 1 - Simulation of a distributed synchronisation using a central coordinator
+*/
+
 #pragma once
 
 #include <iostream>
@@ -24,9 +31,13 @@ FINAL:
 
 class Node{
     private:
+    // Node id
     int id{-1};
 
+    // Reference to the coordinator
     Coordinator &coord;
+
+    // Options recieved from main
     Options opt;
 
     public:

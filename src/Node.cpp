@@ -1,7 +1,16 @@
+/*
+David Fischer (03)
+5CHIF
+
+NVS Projekt 1 - Simulation of a distributed synchronisation using a central coordinator
+*/
+
 #include "Node.h"
 
 using namespace std;
 
+// Node operator function. Enters a while true loop to continualy request access to the
+// critical section. Once granted, it enters the section, then leaves and releases it.
 void Node::operator()(){
     random_device rd;
 
@@ -15,6 +24,7 @@ void Node::operator()(){
 
     ostringstream buf;
 
+    // create httplib client
     httplib::Client cli("http://127.0.0.1:5001");
 
     // Worst case bei 10 nodes -> (5+4)*10
@@ -31,7 +41,7 @@ void Node::operator()(){
 
         fmt::print("Node {}: REQ to enter critical section\n", id);
 
-        // request kritischen abschnitt
+        // request critical section
 
         if(opt.http_communication){
             string url = "/req?node_id="+to_string(id);

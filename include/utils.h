@@ -1,3 +1,10 @@
+/*
+David Fischer (03)
+5CHIF
+
+NVS Projekt 1 - Simulation of a distributed synchronisation using a central coordinator
+*/
+
 #pragma once
 
 #include <iostream>
