@@ -21,6 +21,8 @@ NVS Projekt 1 - Simulation of a distributed synchronisation using a central coor
 
 #include <httplib.h>
 
+#include <spdlog/spdlog.h>
+
 #include "utils.h"
 
 class Coordinator{

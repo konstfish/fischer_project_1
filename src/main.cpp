@@ -12,6 +12,10 @@ NVS Projekt 1 - Simulation of a distributed synchronisation using a central coor
 
 #include "CLI11.hpp"
 
+#include <spdlog/spdlog.h>
+#include <spdlog/sinks/daily_file_sink.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
+
 #include "utils.h"
 
 #include "Coordinator.h"
@@ -55,6 +59,23 @@ int main(int argc, char* argv[]) {
     } catch (const CLI::ParseError &e) { 
         return app.exit(e);
     }
+
+    // create logger
+    std::vector<spdlog::sink_ptr> sinks;
+
+    auto console_sink = std::make_shared<spdlog::sinks::ansicolor_stdout_sink_mt>();
+    console_sink->set_level(spdlog::level::warn);
+    console_sink->set_pattern("[multi_sink_example] [%^%l%$] %v");
+
+    auto file_sink = std::make_shared<spdlog::sinks::daily_file_sink_st>("logfile", 23, 59);
+
+    file_sink->set_level(spdlog::level::trace);
+
+    sinks.push_back(console_sink);
+    sinks.push_back(file_sink);
+    auto combined_logger = std::make_shared<spdlog::logger>("name", begin(sinks), end(sinks));
+    //register it if you need to access it globally
+    spdlog::register_logger(combined_logger);
 
 
     // ran into issues with a larger number of Nodes, 10 should suffice.

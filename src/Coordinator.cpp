@@ -37,8 +37,9 @@ void Coordinator::message_req(int id){
 
     collect_stats();
 
-    fmt::print(fg(fmt::color::light_salmon) | fmt::emphasis::italic,
-        "Coord : OK to Node {}\n", id);
+    //fmt::print(fg(fmt::color::light_salmon) | fmt::emphasis::italic,
+    //    "Coord : OK to Node {}\n", id);
+    spdlog::info("Coord : OK to Node {}", id);
 }
 
 // IN : int id - Node ID
@@ -51,8 +52,9 @@ void Coordinator::message_rel(int id){
     int removed = node_queue.front();
     
     if(removed != id){
-        fmt::print(fg(fmt::color::crimson) | fmt::emphasis::bold,
-            "Coord : REL Request from Node {} didn't match current Node {}\n", id, removed);
+        spdlog::critical("Coord : REL Request from Node {} didn't match current Node {}", id, removed);
+        //fmt::print(fg(fmt::color::crimson) | fmt::emphasis::bold,
+        //    "Coord : REL Request from Node {} didn't match current Node {}\n", id, removed);
     }else{
         node_queue.pop();
     }
@@ -86,8 +88,9 @@ void Coordinator::operator()(bool http_server, bool outage_dect){
                     if(cnt == timeout){
                         // if the counter is able to count up to the timeout, the node is removed from the queue
                         st.failed_nodes += 1;
-                        fmt::print(fg(fmt::color::crimson) | fmt::emphasis::bold,
-                            "Coord : Node {} didn't respond within {} seconds, removing from Queue\n", cur_id, timeout);
+                        //fmt::print(fg(fmt::color::crimson) | fmt::emphasis::bold,
+                        //    "Coord : Node {} didn't respond within {} seconds, removing from Queue\n", cur_id, timeout);
+                        spdlog::error("Coord : Node {} didn't respond within {} seconds, removing from Queue", cur_id, timeout);
                         node_queue.pop();
                         st.recoveries += 1;
                     }
@@ -116,6 +119,8 @@ void Coordinator::operator()(bool http_server, bool outage_dect){
             
             int conv = stoi(id);
 
+            spdlog::info("HTTP: /req from {}", conv);
+
             message_req(conv);
 
             res.set_content("OK", "text/plain");
@@ -129,6 +134,9 @@ void Coordinator::operator()(bool http_server, bool outage_dect){
             }
             
             int conv = stoi(id);
+
+            spdlog::info("HTTP: /rel from {}", conv);
+
 
             message_rel(conv);
 

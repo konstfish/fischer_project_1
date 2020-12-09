@@ -26,6 +26,8 @@ FINAL:
 
 #include <httplib.h>
 
+#include <spdlog/spdlog.h>
+
 #include "utils.h"
 #include "Coordinator.h"
 

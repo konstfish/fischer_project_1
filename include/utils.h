@@ -13,7 +13,9 @@ NVS Projekt 1 - Simulation of a distributed synchronisation using a central coor
 #include <fmt/core.h>
 #include <fmt/color.h>
 
-void signal_handler( int signum);
+// signal handler outlinend in utils.cpp
+void signal_handler(int signum);
+
 
 // Options which are passed to the Node Class. (More expandable than just passing the variables themselfes)
 struct Options{
