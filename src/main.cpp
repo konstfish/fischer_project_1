@@ -60,31 +60,29 @@ int main(int argc, char* argv[]) {
         return app.exit(e);
     }
 
-    // create logger
-    std::vector<spdlog::sink_ptr> sinks;
-
-    auto console_sink = std::make_shared<spdlog::sinks::ansicolor_stdout_sink_mt>();
-    console_sink->set_level(spdlog::level::warn);
-    console_sink->set_pattern("[multi_sink_example] [%^%l%$] %v");
-
-    auto file_sink = std::make_shared<spdlog::sinks::rotating_file_sink_mt>("log", 1024*1024, 5);
-
-    sinks.push_back(file_sink);
-    sinks.push_back(console_sink);
-    auto combined_logger = std::make_shared<spdlog::logger>("CombSink", begin(sinks), end(sinks));
-    //register it if you need to access it globally
-    spdlog::register_logger(combined_logger);
-
-    spdlog::flush_every(std::chrono::seconds(5));
-    spdlog::flush_on(spdlog::level::info);
-
-
     // ran into issues with a larger number of Nodes, 10 should suffice.
     if(communication_via_req && no_of_nodes > 10){
         cout << "number: Value " << no_of_nodes << " not in range 2 to 10 (Limited due to request flag)" << endl
              << "Run with --help for more information." << endl;
         return 1;
     }
+
+    // create logger
+    std::vector<spdlog::sink_ptr> sinks;
+
+    auto console_sink = std::make_shared<spdlog::sinks::ansicolor_stdout_sink_mt>();
+    console_sink->set_level(spdlog::level::warn);
+
+    auto file_sink = std::make_shared<spdlog::sinks::rotating_file_sink_mt>("log", 1024*1024, 5);
+
+    sinks.push_back(file_sink);
+    sinks.push_back(console_sink);
+    auto combined_logger = std::make_shared<spdlog::logger>("CombSink", begin(sinks), end(sinks));
+    //register to access it globally
+    spdlog::register_logger(combined_logger);
+
+    spdlog::flush_every(std::chrono::seconds(5));
+    spdlog::flush_on(spdlog::level::info);
     
     // since this is optional, a unique_ptr handles thread creation
     unique_ptr<thread> thread_coord;
