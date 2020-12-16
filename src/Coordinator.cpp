@@ -1,8 +1,10 @@
 /*
-David Fischer (03)
-5CHIF
-
-NVS Projekt 1 - Simulation of a distributed synchronisation using a central coordinator
+author: David Fischer
+matnr:  i16079
+file:   Coordinator.cpp
+desc:   NVS Projekt 1 - Simulation of a distributed synchronisation using a central coordinator
+class:  5C
+catnr:  03
 */
 
 #include "Coordinator.h"

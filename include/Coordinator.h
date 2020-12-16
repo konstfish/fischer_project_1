@@ -1,11 +1,21 @@
 /*
-David Fischer (03)
-5CHIF
-
-NVS Projekt 1 - Simulation of a distributed synchronisation using a central coordinator
+author: David Fischer
+matnr:  i16079
+file:   Coordinator.h
+desc:   NVS Projekt 1 - Simulation of a distributed synchronisation using a central coordinator
+class:  5C
+catnr:  03
 */
 
 #pragma once
+
+#include "utils.h"
+
+#include <fmt/core.h>
+#include <fmt/color.h>
+#include <tabulate/table.hpp>
+#include <httplib.h>
+#include <spdlog/spdlog.h>
 
 #include <iostream>
 #include <mutex>
@@ -14,20 +24,8 @@ NVS Projekt 1 - Simulation of a distributed synchronisation using a central coor
 #include <vector>
 #include <sstream>
 
-#include <fmt/core.h>
-#include <fmt/color.h>
-
-#include <tabulate/table.hpp>
-
-#include <httplib.h>
-
-#include <spdlog/spdlog.h>
-
-#include "utils.h"
-
 class Coordinator{
     private:
-
         // set start time_point 
         std::chrono::system_clock::time_point start;
 

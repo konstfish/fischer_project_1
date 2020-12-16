@@ -1,25 +1,25 @@
 /*
-David Fischer (03)
-5CHIF
-
-NVS Projekt 1 - Simulation of a distributed synchronisation using a central coordinator
+author: David Fischer
+matnr:  i16079
+file:   main.cpp
+desc:   NVS Projekt 1 - Simulation of a distributed synchronisation using a central coordinator
+class:  5C
+catnr:  03
 */
+
+#include "utils.h"
+#include "Coordinator.h"
+#include "Node.h"
+
+#include "CLI11.hpp"
+#include <spdlog/spdlog.h>
+#include <spdlog/sinks/rotating_file_sink.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
 
 #include <iostream>
 #include <thread>
 #include <vector>
 #include <mutex>
-
-#include "CLI11.hpp"
-
-#include <spdlog/spdlog.h>
-#include <spdlog/sinks/rotating_file_sink.h>
-#include <spdlog/sinks/stdout_color_sinks.h>
-
-#include "utils.h"
-
-#include "Coordinator.h"
-#include "Node.h"
 
 using namespace std;
 
