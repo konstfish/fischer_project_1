@@ -13,6 +13,8 @@ NVS Projekt 1 - Simulation of a distributed synchronisation using a central coor
 #include <fmt/core.h>
 #include <fmt/color.h>
 
+#include <spdlog/spdlog.h>
+
 // signal handler outlinend in utils.cpp
 void signal_handler(int signum);
 
