@@ -24,25 +24,27 @@
 \subsection{Problematik}
 Laut Angabe war das Ziel dieser Aufgabe eine Simulation einer verteilten Synchronisation mit einem zentalen Koordinator zu erstellen. Die Simulation soll mit einer beim Aufruf definierten Anzahl an Nodes gestartet werden.
 
+Die folgenden Illustrationen beschreiben den Prozess, den ein Koordinator durchläuft, sobald eine Node in den kritischen Abschnitt will.
+
 \begin{figure}[H]
     \centering
-    \resizebox{0.5\textwidth}{!}{\input{images/situation1.pdf_tex}}
-    \caption{1}
+    \resizebox{0.4\textwidth}{!}{\input{images/situation1.pdf_tex}}
+    \caption{Node 1 sendet einen "Request" an den Koordinator. Da die Queue leer ist, bekommt Node 1 ein "OK".}
     \label{fig:situation1}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \resizebox{0.5\textwidth}{!}{\input{images/situation2.pdf_tex}}
-    \caption{2}
+    \resizebox{0.4\textwidth}{!}{\input{images/situation2.pdf_tex}}
+    \caption{Node 2 sendet einen "Request" an den Koordinator. Da schon jemand im kritischen Abschnitt ist, wird Node 2 in die Queue gesetzt.}
     \label{fig:situation2}
 \end{figure}
 
 
 \begin{figure}[H]
     \centering
-    \resizebox{0.5\textwidth}{!}{\input{images/situation3.pdf_tex}}
-    \caption{3}
+    \resizebox{0.4\textwidth}{!}{\input{images/situation3.pdf_tex}}
+    \caption{Node 1 verlässt den kritischen Abschnitt und sendet ein "Release" an den Koordinator. Der Koordinator sieht, dass Node 2 noch in der Queue steht, und sendet diesem damit ein "OK". }
     \label{fig:situation3}
 \end{figure}
 
