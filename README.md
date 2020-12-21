@@ -2,6 +2,7 @@
     <h1>Simulation einer verteilten Synchronisation mit einem zentralen Koordinator</h1>
     <h3>fischer_project_1</h3>
     <a href="https://s.konst.fish/fischer_projekt_1">Live-Demo</a>
+    <br>
 </div>
 
 <div align="center">

@@ -54,7 +54,7 @@
     \lineheight{1}%
     \setlength\tabcolsep{0pt}%
     \put(0,0){\includegraphics[width=\unitlength,page=1]{situation1.pdf}}%
-    \put(0.06542056,0.30218069){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}REQ\end{tabular}}}}%
+    \put(0.03426791,0.30218069){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}REQ\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=2]{situation1.pdf}}%
     \put(0.12461059,0.1152648){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Node 1\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=3]{situation1.pdf}}%
@@ -62,7 +62,7 @@
     \put(0,0){\includegraphics[width=\unitlength,page=4]{situation1.pdf}}%
     \put(0.87227414,0.1152648){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Node n\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=5]{situation1.pdf}}%
-    \put(0.26791277,0.4953271){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}OK\end{tabular}}}}%
+    \put(0.31464174,0.42679128){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}OK\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=6]{situation1.pdf}}%
     \put(0.49844237,0.58255452){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}Coordinator\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=7]{situation1.pdf}}%
