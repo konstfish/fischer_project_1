@@ -3,6 +3,13 @@
 \usepackage{cite}
 \usepackage{float}
 \usepackage{tikz}
+\usepackage{hyperref}
+\usepackage[newfloat]{minted}
+\usepackage{caption}
+\usepackage{dirtree}
+
+\newenvironment{code}{\captionsetup{type=listing}}{}
+\SetupFloatingEnvironment{listing}{name=Source Code}
 
 \graphicspath{{images/}}
 
@@ -29,7 +36,7 @@ Die folgenden Illustrationen beschreiben den Prozess, den ein Koordinator durchl
 \begin{figure}[H]
     \centering
     \resizebox{0.4\textwidth}{!}{\input{images/situation1.pdf_tex}}
-    \caption{Node 1 sendet einen "Request" an den Koordinator. Da die Queue leer ist, bekommt Node 1 ein "OK".}
+    \caption{Node 1 sendet einen "Request" an den Koordinator. Da die Queue leer ist, bekommt Node 1 ein "OK" und betritt den kritischen Abschnitt.}
     \label{fig:situation1}
 \end{figure}
 
@@ -48,21 +55,91 @@ Die folgenden Illustrationen beschreiben den Prozess, den ein Koordinator durchl
     \label{fig:situation3}
 \end{figure}
 
-
-\subsubsection{Gegenseitiger Ausschluss (Mutual Exclusion)}
-
-\subsubsection{Verteilte Synchronisation}
-
 \section{Implementierung}
+Für Variablen sowie Funktionen wurde "Snake case" benutzt. Sämtliche vorgegebene coding conditions wurden nach Möglichkeit eingehalten. Um sämtliche Teile des Programmes zu vereinfachen wurden mehrere externe Bibliotheken verwendet, diese sind in Sektion \ref{extBib} kurz beschrieben. 
+
+\subsection{Kurze Beschreibung diverser Codeblöcke}
 
 \subsection{Externe Bibliotheken}
+\label{extBib}
+
+\subsubsection{CLI11}
+CLI11\cite{cli11_ref} ermöglicht einfache Verarbeitung von Kommandozeilenargumenten mit eingebauten Möglichkeiten zum Überprüfen von den angegebenen Werten. Auf die Argumente wird in Sektion \ref{usage} näher eingegangen.
+
+\subsubsection{httplib}
+Eines der Kommandozeilenargumente erlaubt dem Nutzer einen lokalen HTTP Server zu öffnen, um diesen als Kommunikationsmittel zwischen dem Koordinator und den Nodes zu benutzen.
+Ein httplib\cite{httplib-ref} Server öffnet sich lokal auf port 5001 und stellt drei Routen zur verfügung:
+
+\paragraph{/req?node\_id=x}
+Um einen "Request" an den Koordinator zu senden benutzen die Nodes diese Route. Sobald die Nodes eine Antwort mit dem Code 200 erhalten, wird das als "OK" gewertet.
+
+\paragraph{/rel?node\_id=x}
+Um einen "Release" an den Koordinator zu senden benutzen die Nodes diese Route.
+
+\paragraph{/get}
+\label{get_ref}
+Ist eine Route, die dem Nutzer eine Einsicht in das Programm ermöglicht, ohne Einsicht in die Logs zu haben. Eine Live Demo dieser Funktionalität läuft seit längerem in einem VM Container, aufrufbar unter \url{https://s.konst.fish/fischer_projekt_1}.
+
+\subsubsection{tabulate}
+Sobald das Programm vom Nutzer mittels $Ctrl+C$ abgebrochen wird eine Tabelle mittels tabulate\cite{tabulate-ref} erstellt. Diese enthält diverse Informationen die während der Programmlaufzeit gesammelt wurden.
+Insofern die httplib Flag gesetzt ist, kann auf die Tabelle, wie in Paragraph \ref{get_ref} erwähnt, jederzeit zugegriffen werden.
+
+\begin{code}
+\begin{minted}{python}
++-----------------------+--------------------+-------------------------+
+| No. of Admitted Nodes | Maximum Queue Size | Total Time Spent Running|
++-----------------------+--------------------+-------------------------+
+| 536748                | 9                  | 2409006s                |
++-----------------------+--------------------+-------------------------+
+\end{minted}
+\caption{Beispiel einer tabulate Tabelle}
+\end{code}
+    
+\subsubsection{spdlog}
+Um einfaches loggen, parallel in der Konsole und in einem File zu ermöglichen wurde die spdlog\cite{spdlog_ref} Bibliothek verwendet. 
+\begin{code}
+\begin{minted}{cpp}
+sinks.push_back(file_sink);
+sinks.push_back(console_sink);
+auto combined_logger = make_shared<spdlog::logger>("CombSink", 
+                                                    begin(sinks), 
+                                                    end(sinks));
+// register to access it globally
+spdlog::register_logger(combined_logger);
+
+spdlog::info("Beispiel Log Eintrag");
+\end{minted}
+\caption{Registrieren eines kombinierten Loggers, um global in diesen schreiben zu können.}
+\end{code}
 
 \section{Verwendung}
+\label{usage}
 
-\subsection{Kommandozeilen Argumente}
+\subsection{Kommandozeilenargumente}
 
-\section{Projekt Struktur}
-
+\section{Projektstruktur}
+\dirtree{%
+  .1 /.
+  .2 LICENSE.
+  .2 meson\_options.txt.
+  .2 meson.build.
+  .2 README.md.
+  .2 .gitignore.
+  .2 include.
+  .3 utils.h.
+  .3 Node.h.
+  .3 Coordinator.h.
+  .2 src.
+  .3 utils.cpp.
+  .3 Node.cpp.
+  .3 Coordinator.cpp.
+  .3 main.cpp.
+  .2 doc.
+  .3 ausarbeitung.tex.
+  .3 references.bib.
+  .3 ausarbeitung.pdf.
+  .2 build.
+}\hfill
 
 % .bib include & references
 \newpage

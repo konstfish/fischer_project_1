@@ -78,7 +78,7 @@ int main(int argc, char* argv[]) {
     sinks.push_back(file_sink);
     sinks.push_back(console_sink);
     auto combined_logger = std::make_shared<spdlog::logger>("CombSink", begin(sinks), end(sinks));
-    //register to access it globally
+    // register to access it globally
     spdlog::register_logger(combined_logger);
 
     spdlog::flush_every(std::chrono::seconds(5));
