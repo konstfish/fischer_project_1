@@ -106,7 +106,6 @@ int main(int argc, char* argv[]) {
         node_container.at(cnt) = thread{tmp_node};
     }
 
-
     // join threads from node_container
     for( auto &t : node_container ) {
         t.join();

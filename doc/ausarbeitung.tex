@@ -7,6 +7,10 @@
 \usepackage[newfloat]{minted}
 \usepackage{caption}
 \usepackage{dirtree}
+\tolerance=1
+\emergencystretch=\maxdimen
+\hyphenpenalty=10000
+\hbadness=10000
 
 \newenvironment{code}{\captionsetup{type=listing}}{}
 \SetupFloatingEnvironment{listing}{name=Source Code}
@@ -31,7 +35,7 @@
 \subsection{Problematik}
 Laut Angabe war das Ziel dieser Aufgabe eine Simulation einer verteilten Synchronisation mit einem zentalen Koordinator zu erstellen. Die Simulation soll mit einer beim Aufruf definierten Anzahl an Nodes gestartet werden.
 
-Die folgenden Illustrationen beschreiben den Prozess, den ein Koordinator durchläuft, sobald eine Node in den kritischen Abschnitt will.
+Die folgenden Illustrationen beschreiben den Prozess, den ein Koordinator durchläuft, sobald eine Node den kritischen Abschnitt betreten will.
 
 \begin{figure}[H]
     \centering
@@ -60,6 +64,85 @@ Für Variablen sowie Funktionen wurde "Snake case" benutzt. Sämtliche vorgegebe
 
 \subsection{Kurze Beschreibung diverser Codeblöcke}
 
+\subsubsection{Erstellen einer dynamischen Nummer an Nodes}
+Um, wie nach Angabe, eine dynamische Nummer an Workerthreads zu erstellen, wird ein thread vector erstellt. Dieser wird mit threads der $operator()()$ funktion von Node Klassen befüllt.
+Genauer sieht man den Prozess in Snippet \ref{thread_vector_ref}.
+
+\begin{code}
+\begin{minted}{cpp}
+// create vector of threads to store the nodes operator()() threads
+vector<thread> node_container;
+node_container.resize(no_of_nodes);
+
+for (int cnt = 0; cnt < no_of_nodes; cnt++) {
+    Node tmp_node(cnt, ref(coord), opt);
+    node_container.at(cnt) = thread{tmp_node};
+}
+
+// join threads from node_container
+for( auto &t : node_container ) {
+    t.join();
+}
+\end{minted}
+\caption{Erstellen sowie befüllen des node\_container vectors.}
+\label{thread_vector_ref}
+\end{code}
+
+\subsubsection{Anfragen von Workerthreads an den Koordinator}
+Um die Kommunikation zwischen Workerthreads und dem Koordinator zu ermöglichen, wird dem Konstruktor jedes Workerthreads eine Referenz auf den Koordinator mitgegeben. 
+Alternativ, ist es möglich HTTP als Kommunikationsmedium zu benutzen, genauer beschrieben in Sektion \ref{httplib_ref}.
+
+\subsubsection{Verarbeitung von REQ Anfragen an den Koordinator}
+
+Um zu signalisieren, dass ein Workerthread den kritischen Abschnitt verlassen hat, wird eine "condition variable" benutzt. Dank dieser lies sich die Verarbeitung von REQ und REL Anfragen einfach gestalten.
+Da der Funktionsaufruf den Rest des Ablaufs des Workerthreads blockiert, kann das verlassen der Funktion als "OK" gewertet werden.
+
+\begin{code}
+\begin{minted}{cpp}
+
+void Coordinator::message_req(int id){
+    unique_lock<mutex> ul{mtx};
+
+    node_queue.push(id);
+
+    while(id != node_queue.front()){
+        spot_taken.wait_for(ul, 1s);
+    }
+
+    spdlog::info("Coord : OK to Node {}", id);
+}
+
+\end{minted}
+\caption{message\_req() funktion, die von Workerthreads aufgerufen wird.}
+\end{code}
+
+\subsubsection{Verarbeitung von REL Anfragen an den Koordinator}
+Sobald ein Workerthread den kritischen Abschnitt verlässt ruft dieser die $message\_rel()$ Funktion auf. 
+Die Funktion vergleicht, ob die Node, die vorne in der Queue steht, gleicht mit der Node ist, die die REL Anfrage sendet. Damit ist eine minimale Fehlerverarbeitung gegeben.
+
+\begin{code}
+\begin{minted}{cpp}
+
+void Coordinator::message_rel(int id){
+    unique_lock<mutex> ul{mtx};
+
+    int removed = node_queue.front();
+    
+    if(removed != id){
+        spdlog::critical("Coord : REL Request from Node {}", 
+                         "didn't match current Node {}", 
+                          id, removed);
+    }else{
+        node_queue.pop();
+    }
+
+    spot_taken.notify_one();
+}
+
+\end{minted}
+\caption{message\_rel() funktion, die von Workerthreads aufgerufen wird.}
+\end{code}
+
 \subsection{Externe Bibliotheken}
 \label{extBib}
 
@@ -67,14 +150,15 @@ Für Variablen sowie Funktionen wurde "Snake case" benutzt. Sämtliche vorgegebe
 CLI11\cite{cli11_ref} ermöglicht einfache Verarbeitung von Kommandozeilenargumenten mit eingebauten Möglichkeiten zum Überprüfen von den angegebenen Werten. Auf die Argumente wird in Sektion \ref{usage} näher eingegangen.
 
 \subsubsection{httplib}
+\label{httplib_ref}
 Eines der Kommandozeilenargumente erlaubt dem Nutzer einen lokalen HTTP Server zu öffnen, um diesen als Kommunikationsmittel zwischen dem Koordinator und den Nodes zu benutzen.
 Ein httplib\cite{httplib-ref} Server öffnet sich lokal auf port 5001 und stellt drei Routen zur verfügung:
 
 \paragraph{/req?node\_id=x}
-Um einen "Request" an den Koordinator zu senden benutzen die Nodes diese Route. Sobald die Nodes eine Antwort mit dem Code 200 erhalten, wird das als "OK" gewertet.
+Um einen "Request" an den Koordinator zu senden, benutzen die Nodes diese Route. Sobald die Nodes eine Antwort mit dem Code 200 erhalten, wird das als "OK" gewertet.
 
 \paragraph{/rel?node\_id=x}
-Um einen "Release" an den Koordinator zu senden benutzen die Nodes diese Route.
+Um einen "Release" an den Koordinator zu senden, benutzen die Nodes diese Route.
 
 \paragraph{/get}
 \label{get_ref}
@@ -94,7 +178,9 @@ Insofern die httplib Flag gesetzt ist, kann auf die Tabelle, wie in Paragraph \r
 \end{minted}
 \caption{Beispiel einer tabulate Tabelle}
 \end{code}
-    
+
+\newpage
+
 \subsubsection{spdlog}
 Um einfaches loggen, parallel in der Konsole und in einem File zu ermöglichen wurde die spdlog\cite{spdlog_ref} Bibliothek verwendet. 
 \begin{code}
@@ -116,6 +202,22 @@ spdlog::info("Beispiel Log Eintrag");
 \label{usage}
 
 \subsection{Kommandozeilenargumente}
+\subsubsection{Erforderlich}
+
+\paragraph{number}
+Nummer an Workerthread, die erstellt werden soll. Standardmäßig limitiert auf 2 bis 200. Sollte die -r Flagge gesetzt sein, ist die Limitation von 2 auf 10 reduziert.
+
+\subsubsection{Optional}
+\paragraph{-o, --outage-simulation}
+Lässt Workerthreads mit einer 3\% Chance pro eintritt in den kritischen Abschnitt ausfallen, um einen Deadlock zu erzeugen. 
+
+\paragraph{-d, --outage-detection}
+Nur zulässig, wenn --outage-simulation auch gesetzt ist. Lässt den Koordinator 8 Sekunden auf die Node warten. Wenn nach dieser Zeit keine REL Anfrage eingeht, wird die Node as der Queue entfernt.
+
+\paragraph{-r, --requests}
+Lässt Kommunikation zwischen den Threads über HTTP laufen. Näher beschrieben in \ref{httplib_ref}.
+
+\newpage
 
 \section{Projektstruktur}
 \dirtree{%

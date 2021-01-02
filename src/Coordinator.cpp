@@ -13,7 +13,7 @@ using namespace std;
 
 // IN : /
 // OUT: /
-// Prints a diverse set of information from the node queue 
+// Debug function to print a diverse set of information, gathered from the node queue 
 void Coordinator::print_queue(){
     cout << "Coord: Current Queue Size: " << node_queue.size() << endl;
     if(node_queue.size() >= 2){
