@@ -1,5 +1,6 @@
 <div align="center">
-    <h1>Simulation einer verteilten Synchronisation mit einem zentralen Koordinator</h1>
+    <h1>Simulation of a distributed synchronization using a central Coordinator</h1>
+    <h4>Simulation einer verteilten Synchronisation mit einem zentralen Koordinator</h4>
     <h3>fischer_project_1</h3>
 </div>
 
