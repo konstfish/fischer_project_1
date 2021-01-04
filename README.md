@@ -12,6 +12,10 @@
 
 <a href="https://s.konst.fish/fischer_projekt_1">Live-Demo</a>
 
+## Short Summary
+
+The goal of this assignment was to create a Simulation of a distributed synchronization using a central Coordinator. The number of Nodes should be defined using a command-line argument.
+
 ## Usage
 
 ```
@@ -34,3 +38,31 @@ Options:
 
 `mkdir build && cd build && meson .. && ninja`
 
+## Example Output
+
+```
+[2021-01-04 20:01:54.449] [info] Node 3: Preparing to enter critical section (4s)
+[2021-01-04 20:01:54.449] [info] Node 0: Preparing to enter critical section (4.68s)
+[2021-01-04 20:01:54.449] [info] Node 1: Preparing to enter critical section (3.89s)
+[2021-01-04 20:01:54.449] [info] Node 2: Preparing to enter critical section (3.48s)
+[2021-01-04 20:01:54.449] [info] Node 4: Preparing to enter critical section (4.89s)
+[2021-01-04 20:01:57.932] [info] Node 2: REQ to enter critical section
+[2021-01-04 20:01:57.932] [info] Coord : OK to Node 2
+[2021-01-04 20:01:57.932] [info] Node 2: Entering critical section
+[2021-01-04 20:01:58.337] [info] Node 1: REQ to enter critical section
+[2021-01-04 20:01:58.453] [info] Node 3: REQ to enter critical section
+[2021-01-04 20:01:59.132] [info] Node 0: REQ to enter critical section
+[2021-01-04 20:01:59.340] [info] Node 4: REQ to enter critical section
+[2021-01-04 20:02:01.935] [info] Node 2: REL critical section
+[2021-01-04 20:02:01.935] [info] Node 2: Preparing to enter critical section (4.4s)
+[2021-01-04 20:02:02.353] [info] Coord : OK to Node 1
+[2021-01-04 20:02:02.353] [info] Node 1: Entering critical section
+^C
+[2021-01-04 20:02:03.353] [critical] Interrupt signal (2) recieved!
+[2021-01-04 20:02:02.353] [info] Final Stats:
++-----------------------+--------------------+-------------------------+--------------------------+
+| No. of Admitted Nodes | Maximum Queue Size | Failed Nodes/Recoveries | Total Time Spent Running |
++-----------------------+--------------------+-------------------------+--------------------------+
+| 2                     | 4                  | 0/0                     | 8s                       |
++-----------------------+--------------------+-------------------------+--------------------------+
+```

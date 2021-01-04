@@ -11,8 +11,9 @@ catnr:  03
 
 #include "utils.h"
 
-#include <fmt/core.h>
-#include <fmt/color.h>
+//#include <fmt/core.h>
+//#include <fmt/color.h>
+
 #include <tabulate/table.hpp>
 #include <httplib.h>
 #include <spdlog/spdlog.h>

@@ -13,9 +13,9 @@ using namespace std;
 
 // Catches SIGINT and displays a Message. The global Coordinator calls its Destructor, which prints the table.  
 void signal_handler(int signum) {
-    fmt::print(fg(fmt::color::crimson) | fmt::emphasis::bold,
-                    "\nInterrupt signal ({}) recieved!\n", signum);
-    
+    //fmt::print(fg(fmt::color::crimson) | fmt::emphasis::bold,
+    //                "\nInterrupt signal ({}) recieved!\n", signum);
+    spdlog::critical("Interrupt signal ({}) recieved!", signum);
     spdlog::drop_all();
     spdlog::shutdown();
 

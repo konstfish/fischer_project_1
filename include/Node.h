@@ -16,9 +16,11 @@ catnr:  03
 FINAL:
 #define FMT_HEADER_ONLY
 #include <fmt/format.h>
-*/
+
 #include <fmt/core.h>
 #include <fmt/color.h>
+*/
+
 #include <httplib.h>
 #include <spdlog/spdlog.h>
 

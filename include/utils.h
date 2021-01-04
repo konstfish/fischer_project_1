@@ -9,8 +9,9 @@ catnr:  03
 
 #pragma once
 
-#include <fmt/core.h>
-#include <fmt/color.h>
+//#include <fmt/core.h>
+//#include <fmt/color.h>
+
 #include <spdlog/spdlog.h>
 
 #include <iostream>

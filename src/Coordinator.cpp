@@ -172,8 +172,7 @@ void Coordinator::output_stat_table(){
     int tmp = duration.count();
 
     if(tmp > 3){
-        fmt::print(fmt::emphasis::bold,
-            "Final Stats:\n");
+        spdlog::info("Final Stats:", conv);
         std::cout << generate_stat_table() << endl;
     }
 }
