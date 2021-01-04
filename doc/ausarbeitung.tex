@@ -19,7 +19,7 @@
 
 \title{Simulation einer verteilten Synchronisation mit einem zentralen Koordinator}
 \author{David Fischer, 5CHIF}
-\date{Dezember 2020}
+\date{Jänner 2021}
 
 \begin{document}
 
@@ -33,7 +33,7 @@
 \section{Einleitung}
 
 \subsection{Problematik}
-Laut Angabe war das Ziel dieser Aufgabe eine Simulation einer verteilten Synchronisation mit einem zentalen Koordinator zu erstellen. Die Simulation soll mit einer beim Aufruf definierten Anzahl an Nodes gestartet werden.
+Laut Angabe war das Ziel dieser Aufgabe, eine Simulation einer verteilten Synchronisation mit einem zentalen Koordinator zu erstellen. Die Simulation soll mit einer beim Aufruf definierten Anzahl an Nodes gestartet werden.
 
 Die folgenden Illustrationen beschreiben den Prozess, den ein Koordinator durchläuft, sobald eine Node den kritischen Abschnitt betreten will.
 
@@ -60,12 +60,12 @@ Die folgenden Illustrationen beschreiben den Prozess, den ein Koordinator durchl
 \end{figure}
 
 \section{Implementierung}
-Für Variablen sowie Funktionen wurde "Snake case" benutzt. Sämtliche vorgegebene coding conditions wurden nach Möglichkeit eingehalten. Um sämtliche Teile des Programmes zu vereinfachen wurden mehrere externe Bibliotheken verwendet, diese sind in Sektion \ref{extBib} kurz beschrieben. 
+Für Variablen sowie Funktionen wurde "Snake case" benutzt. Sämtliche vorgegebene Codierungskonventionen wurden nach Möglichkeit eingehalten. Um sämtliche Teile des Programmes zu vereinfachen, wurden mehrere externe Bibliotheken verwendet, diese sind in Sektion \ref{extBib} kurz beschrieben. 
 
 \subsection{Kurze Beschreibung diverser Codeblöcke}
 
 \subsubsection{Erstellen einer dynamischen Nummer an Nodes}
-Um, wie nach Angabe, eine dynamische Nummer an Workerthreads zu erstellen, wird ein thread vector erstellt. Dieser wird mit threads der $operator()()$ funktion von Node Klassen befüllt.
+Um, wie nach Angabe, eine dynamische Nummer an Workerthreads zu erstellen, wird ein Thread Vector erstellt. Dieser wird mit Threads der $operator()()$ Funktion von Node Klassen befüllt.
 Genauer sieht man den Prozess in Snippet \ref{thread_vector_ref}.
 
 \begin{code}
@@ -84,18 +84,18 @@ for( auto &t : node_container ) {
     t.join();
 }
 \end{minted}
-\caption{Erstellen sowie befüllen des node\_container vectors.}
+\caption{Erstellen sowie Befüllen des node\_container Vectors.}
 \label{thread_vector_ref}
 \end{code}
 
 \subsubsection{Anfragen von Workerthreads an den Koordinator}
 Um die Kommunikation zwischen Workerthreads und dem Koordinator zu ermöglichen, wird dem Konstruktor jedes Workerthreads eine Referenz auf den Koordinator mitgegeben. 
-Alternativ, ist es möglich HTTP als Kommunikationsmedium zu benutzen, genauer beschrieben in Sektion \ref{httplib_ref}.
+Alternativ ist es möglich, HTTP als Kommunikationsmedium zu benutzen, dies wird genauer beschrieben in Sektion \ref{httplib_ref}.
 
 \subsubsection{Verarbeitung von REQ Anfragen an den Koordinator}
 
-Um zu signalisieren, dass ein Workerthread den kritischen Abschnitt verlassen hat, wird eine "condition variable" benutzt. Dank dieser lies sich die Verarbeitung von REQ und REL Anfragen einfach gestalten.
-Da der Funktionsaufruf den Rest des Ablaufs des Workerthreads blockiert, kann das verlassen der Funktion als "OK" gewertet werden.
+Um zu signalisieren, dass ein Workerthread den kritischen Abschnitt verlassen hat, wird eine Bedingungsvariable benutzt. Dank dieser ließ sich die Verarbeitung von REQ und REL Anfragen einfach gestalten.
+Da der Funktionsaufruf den Rest des Ablaufs des Workerthreads blockiert, kann das Verlassen der Funktion als "OK" gewertet werden.
 
 \begin{code}
 \begin{minted}{cpp}
@@ -113,7 +113,7 @@ void Coordinator::message_req(int id){
 }
 
 \end{minted}
-\caption{message\_req() funktion, die von Workerthreads aufgerufen wird.}
+\caption{message\_req() Funktion, die von Workerthreads aufgerufen wird.}
 \end{code}
 
 \subsubsection{Verarbeitung von REL Anfragen an den Koordinator}
@@ -140,19 +140,19 @@ void Coordinator::message_rel(int id){
 }
 
 \end{minted}
-\caption{message\_rel() funktion, die von Workerthreads aufgerufen wird.}
+\caption{message\_rel() Funktion, die von Workerthreads aufgerufen wird.}
 \end{code}
 
 \subsection{Externe Bibliotheken}
 \label{extBib}
 
 \subsubsection{CLI11}
-CLI11\cite{cli11_ref} ermöglicht einfache Verarbeitung von Kommandozeilenargumenten mit eingebauten Möglichkeiten zum Überprüfen von den angegebenen Werten. Auf die Argumente wird in Sektion \ref{usage} näher eingegangen.
+CLI11\cite{cli11_ref} ermöglicht eine einfache Verarbeitung von Kommandozeilenargumenten mit eingebauten Methoden zum Überprüfen der angegebenen Werte. Auf diese Argumente wird in Sektion \ref{usage} näher eingegangen.
 
 \subsubsection{httplib}
 \label{httplib_ref}
-Eines der Kommandozeilenargumente erlaubt dem Nutzer einen lokalen HTTP Server zu öffnen, um diesen als Kommunikationsmittel zwischen dem Koordinator und den Nodes zu benutzen.
-Ein httplib\cite{httplib-ref} Server öffnet sich lokal auf port 5001 und stellt drei Routen zur verfügung:
+Eines der Kommandozeilenargumente erlaubt dem Nutzer, einen lokalen HTTP Server zu öffnen, um diesen als Kommunikationsmittel zwischen dem Koordinator und den Nodes zu benutzen.
+Ein httplib\cite{httplib-ref} Server öffnet sich lokal auf port 5001 und stellt drei Routen zur Verfügung:
 
 \paragraph{/req?node\_id=x}
 Um einen "Request" an den Koordinator zu senden, benutzen die Nodes diese Route. Sobald die Nodes eine Antwort mit dem Code 200 erhalten, wird das als "OK" gewertet.
@@ -162,11 +162,11 @@ Um einen "Release" an den Koordinator zu senden, benutzen die Nodes diese Route.
 
 \paragraph{/get}
 \label{get_ref}
-Ist eine Route, die dem Nutzer eine Einsicht in das Programm ermöglicht, ohne Einsicht in die Logs zu haben. Eine Live Demo dieser Funktionalität läuft seit längerem in einem VM Container, aufrufbar unter \url{https://s.konst.fish/fischer_projekt_1}.
+Ist eine Route, die dem Nutzer eine Einsicht in das Programm ermöglicht, ohne Einsicht in die Logs zu haben. Eine Live-Demo dieser Funktionalität läuft seit längerem in einem VM Container, aufrufbar unter \url{https://s.konst.fish/fischer_projekt_1}.
 
 \subsubsection{tabulate}
-Sobald das Programm vom Nutzer mittels $Ctrl+C$ abgebrochen wird eine Tabelle mittels tabulate\cite{tabulate-ref} erstellt. Diese enthält diverse Informationen die während der Programmlaufzeit gesammelt wurden.
-Insofern die httplib Flag gesetzt ist, kann auf die Tabelle, wie in Paragraph \ref{get_ref} erwähnt, jederzeit zugegriffen werden.
+Sobald das Programm vom Nutzer mittels $Ctrl+C$ abgebrochen wird, wird eine Tabelle mittels tabulate\cite{tabulate-ref} erstellt. Diese enthält diverse Informationen die während der Programmlaufzeit gesammelt wurden.
+Wenn die httplib Flag gesetzt ist, kann auf die Tabelle, wie in Paragraph \ref{get_ref} erwähnt, jederzeit zugegriffen werden.
 
 \begin{code}
 \begin{minted}{python}
@@ -182,7 +182,7 @@ Insofern die httplib Flag gesetzt ist, kann auf die Tabelle, wie in Paragraph \r
 \newpage
 
 \subsubsection{spdlog}
-Um einfaches loggen, parallel in der Konsole und in einem File zu ermöglichen wurde die spdlog\cite{spdlog_ref} Bibliothek verwendet. 
+Um einfaches Loggen, parallel in der Konsole und in einem File, zu ermöglichen wurde die spdlog\cite{spdlog_ref} Bibliothek verwendet. 
 \begin{code}
 \begin{minted}{cpp}
 sinks.push_back(file_sink);
@@ -195,7 +195,7 @@ spdlog::register_logger(combined_logger);
 
 spdlog::info("Beispiel Log Eintrag");
 \end{minted}
-\caption{Registrieren eines kombinierten Loggers, um global in diesen schreiben zu können.}
+\caption{Registrieren eines kombinierten Loggers, um global in diesem schreiben zu können.}
 \end{code}
 
 \section{Verwendung}
@@ -209,10 +209,10 @@ Nummer an Workerthread, die erstellt werden soll. Standardmäßig limitiert auf 
 
 \subsubsection{Optional}
 \paragraph{-o, --outage-simulation}
-Lässt Workerthreads mit einer 3\% Chance pro eintritt in den kritischen Abschnitt ausfallen, um einen Deadlock zu erzeugen. 
+Lässt Workerthreads mit einer 3 \% Chance pro Eintritt in den kritischen Abschnitt ausfallen, um einen Deadlock zu erzeugen. 
 
 \paragraph{-d, --outage-detection}
-Nur zulässig, wenn --outage-simulation auch gesetzt ist. Lässt den Koordinator 8 Sekunden auf die Node warten. Wenn nach dieser Zeit keine REL Anfrage eingeht, wird die Node as der Queue entfernt.
+Nur zulässig, wenn --outage-simulation auch gesetzt ist. Lässt den Koordinator 8 Sekunden auf die Node warten. Wenn nach dieser Zeit keine REL Anfrage eingeht, wird die Node aus der Queue entfernt.
 
 \paragraph{-r, --requests}
 Lässt Kommunikation zwischen den Threads über HTTP laufen. Näher beschrieben in \ref{httplib_ref}.
