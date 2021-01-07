@@ -60,7 +60,7 @@ Options:
 [2021-01-04 20:02:02.353] [info] Node 1: Entering critical section
 ^C
 [2021-01-04 20:02:03.353] [critical] Interrupt signal (2) recieved!
-[2021-01-04 20:02:02.353] [info] Final Stats:
+Final Stats:
 +-----------------------+--------------------+-------------------------+--------------------------+
 | No. of Admitted Nodes | Maximum Queue Size | Failed Nodes/Recoveries | Total Time Spent Running |
 +-----------------------+--------------------+-------------------------+--------------------------+
