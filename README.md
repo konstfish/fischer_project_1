@@ -39,6 +39,8 @@ Options:
 
 `mkdir build && cd build && meson .. && ninja`
 
+Note: On Ubuntu, compilation using ninja might need to be started twice due to a weird error with gcc. See [ERROR.md](ERROR.md) for more.
+
 ## Example Output
 
 ```

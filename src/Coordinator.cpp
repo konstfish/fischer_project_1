@@ -175,6 +175,7 @@ void Coordinator::output_stat_table(){
         cout << "Final Stats:" << endl;
         std::cout << generate_stat_table() << endl;
     }
+    exit(0);
 }
 
 // helper function to dump the stat table into a string and return said string
