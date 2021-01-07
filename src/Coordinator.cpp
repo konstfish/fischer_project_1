@@ -172,7 +172,7 @@ void Coordinator::output_stat_table(){
     int tmp = duration.count();
 
     if(tmp > 3){
-        cout << Final Stats: << endl;
+        cout << "Final Stats:" << endl;
         std::cout << generate_stat_table() << endl;
     }
 }
